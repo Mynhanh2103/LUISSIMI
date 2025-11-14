@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-
+import { useNavigate, Link } from "react-router-dom";
 // --- Helper Function ---
 // Hàm định dạng tiền tệ Việt Nam
-const formatCurrency = (amount) => {
+/*const formatCurrency = (amount) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
-};
+};*/
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 import api from "../api/axios";
 import heroVideo from "../assets/hero/istockphoto-1307688907-640_adpp_is.mp4";
@@ -98,23 +98,33 @@ function FeaturedProductPost({ product, align = "left" }) {
       ? product.images[0].url
       : "https://placehold.co/600x700/EEE/AAA?text=No+Image";
 
-  // Xác định thứ tự cột cho layout "so le"
+  // Hàm định dạng tiền tệ (thêm vào đây cho an toàn)
+  const formatCurrency = (amount) => {
+    if (typeof amount !== "number") return "Giá không xác định";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
   const imageOrder = align === "left" ? "md:order-1" : "md:order-2";
   const textOrder = align === "left" ? "md:order-2" : "md:order-1";
 
   return (
     <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-16">
-      {/* Cột Hình ảnh */}
+      {/* Cột Hình ảnh (Sửa <a> thành <Link>) */}
       <div
         className={`rounded-lg overflow-hidden shadow-xl ${imageOrder} group`}
       >
-        <a href={`/product/${product._id}`}>
+        {/* ▼▼▼ SỬA DÒNG NÀY ▼▼▼ */}
+        <Link to={`/product/${product._id}`}>
           <img
             src={imageSrc}
             alt={product.name}
             className="w-full h-auto object-cover aspect-[4/5] transition-transform duration-500 ease-in-out group-hover:scale-105"
           />
-        </a>
+        </Link>
+        {/* ▲▲▲ SỬA DÒNG NÀY ▲▲▲ */}
       </div>
 
       {/* Cột Văn bản (Caption, Giá) */}
@@ -126,23 +136,24 @@ function FeaturedProductPost({ product, align = "left" }) {
           {formatCurrency(product.price)}
         </p>
         <p className="text-stone-600 leading-relaxed mb-6">
-          {/* Bạn có thể dùng product.description ở đây nếu có */}
           {product.description ||
             "Mỗi sản phẩm là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ bởi những nghệ nhân tài hoa, mang theo câu chuyện về đam mê..."}
         </p>
-        <a
-          href={`/product/${product._id}`} // Giả sử link là thế này
+
+        {/* ▼▼▼ SỬA DÒNG NÀY ▼▼▼ */}
+        <Link
+          to={`/product/${product._id}`}
           className="inline-block bg-stone-800 text-white font-semibold py-3 px-6 rounded-md tracking-wide hover:bg-stone-700 transition-colors"
         >
           Xem chi tiết
-        </a>
+        </Link>
+        {/* ▲▲▲ SỬA DÒNG NÀY ▲▲▲ */}
       </div>
     </div>
   );
 }
 
 // --- Component Chính ---
-import { useNavigate } from "react-router-dom";
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
