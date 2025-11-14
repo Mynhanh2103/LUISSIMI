@@ -8,7 +8,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
     currency: "VND",
   }).format(amount);
 };*/
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 import api from "../api/axios";
 import heroVideo from "../assets/hero/istockphoto-1307688907-640_adpp_is.mp4";
 // Dữ liệu cho carousel (không có tiêu đề)

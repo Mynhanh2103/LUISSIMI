@@ -9,5 +9,5 @@
    npm run dev
 4. Open http://localhost:5173
 
-Note: backend should run on http://localhost:3000 and provide the routes used above.
+Note: backend should run on `${import.meta.env.VITE_API_URL}/api/admin/auth/register` and provide the routes used above.
 \*/

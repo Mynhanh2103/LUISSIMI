@@ -11,7 +11,13 @@ import cartRoutes from "./routes/cartRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 dotenv.config();
 const app = express();
-app.use(cors());
+const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173"; // 5173 là port default của Vite
+
+app.use(
+  cors({
+    origin: frontendURL, // Chỉ cho phép URL này gọi API
+  })
+);
 app.use(express.json());
 
 mongoose
@@ -32,6 +38,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 // 🛠 Admin routes (quản lý user, đơn hàng, thống kê,...)
 app.use("/api/admin", adminRoutes);
-app.listen(3000, () => console.log("Server running on port 3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 //console.log("🟢 Running from directory:", process.cwd());
 //console.log("🟢 Using .env from:", process.env.MONGO_URI);

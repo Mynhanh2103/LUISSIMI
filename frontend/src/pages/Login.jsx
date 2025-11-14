@@ -12,7 +12,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/admin/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/admin/auth/login`,
         { email, password }
       );
       const token = res.data.token;
