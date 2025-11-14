@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Toàn bộ nền và font mặc định */
+body {
+  @apply bg-background text-text font-inter;
+}
+
+/* Tiêu đề sang trọng */
+h1,
+h2,
+h3 {
+  @apply font-playfair text-primary;
+}
