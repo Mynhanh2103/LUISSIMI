@@ -447,27 +447,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6️⃣ Bộ sưu tập đầy đủ */}
-      <section className="py-16 md:py-20 bg-stone-100 text-center">
-        <h2 className="text-3xl md:text-4xl font-playfair mb-12">
-          Toàn bộ sưu tập
-        </h2>
-        {loading ? (
-          <p className="text-stone-500">Đang tải...</p>
-        ) : (
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-6">
-            {products.map((p) => (
-              <ProductCard key={p._id} product={p} />
-            ))}
+      {/* --- ✨ SECTION 6 ĐÃ ĐƯỢC THAY THẾ ✨ --- */}
+      {/* 6️⃣ Sản phẩm nổi bật (Layout "IG Post" So Le) */}
+      <section className="py-16 md:py-24 bg-stone-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-playfair text-center mb-16 text-stone-800">
+            Từ bộ sưu tập
+          </h2>
+
+          {loading ? (
+            <p className="text-center text-stone-500">Đang tải...</p>
+          ) : (
+            // Dùng flex-col để các post xếp chồng lên nhau
+            <div className="flex flex-col gap-16 md:gap-24">
+              {/* Lấy 3 sản phẩm đầu tiên để làm nổi bật */}
+              {products.slice(0, 3).map((p, index) => (
+                <FeaturedProductPost
+                  key={p._id}
+                  product={p}
+                  // Cứ mỗi 2 sản phẩm thì đổi layout (so le)
+                  align={index % 2 === 0 ? "left" : "right"}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Nút Xem tất cả */}
+          <div className="text-center mt-16 md:mt-24">
+            <button
+              onClick={() => navigate("/collection")}
+              className="border border-stone-800 text-stone-800 font-semibold px-8 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all duration-300 tracking-wide"
+            >
+              Xem tất cả sản phẩm
+            </button>
           </div>
-        )}
-        <div className="text-center mb-10">
-          <button
-            onClick={() => navigate("/collection")}
-            className="border border-[var(--accent)] text-[var(--accent)] px-6 py-2 rounded-full hover:bg-[var(--accent)] hover:text-black transition"
-          >
-            Xem tất cả sản phẩm
-          </button>
         </div>
       </section>
     </main>
