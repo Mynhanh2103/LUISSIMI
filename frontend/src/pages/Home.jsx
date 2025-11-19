@@ -15,33 +15,27 @@ import heroVideo from "../assets/hero/istockphoto-1307688907-640_adpp_is.mp4";
 const carouselImages = [
   {
     id: 1,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/518271214_122114673998925027_4427728725960124425_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGjauU_Yd7Y3pimWgcdiXIYT8-_NuJ6RAVPz7824npEBbbHVbJd0JIsIhDm38KJ-GKizzYPgA1mgQA7qtobVl8p&_nc_ohc=vNbbDNEkm04Q7kNvwHvzrhz&_nc_oc=Adl-AcCjrSFXUfVdc63CUi9Z4GtZJ46dqUoPf0BWiYTjfBdKmG8_GUQN6gOxAiW6f3AAcOznxHBN1H7ohDarw5Yt&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=tST_woIlb94OUjJoroOw1g&oh=00_AfiNdhnoeWLw7RhjOhqgAyC-m3C7YjoVNtoUId3sJyiQdA&oe=691CF218",
+    imageUrl: "/hero1.jpg",
   },
   {
     id: 2,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/514406400_122105385050925027_3809942413611523471_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEfxrNzjECGEcdIemeHD9kgeIK__1cpu9N4gr__Vym705CqTz_pFFzRCK04mZLmzJon-g_FXm6MZ2E2SuNmGRYk&_nc_ohc=teBiSlrDH4wQ7kNvwFMHyqK&_nc_oc=Adlr4YqUqs5B40OdTu61cxKzZaaoTVynxIgE8tYaS9M_zM6RCnudGEjP9DkB5FxpARQQKUGiAlKl5J64hilr_opT&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=3nt5o0Ijg39M0sGPmJdlSg&oh=00_AfiFWcrP3QQikCZmgCeUxouKHLUWvDAQ-oDHjSLKGNYr9g&oe=691CFD53",
+    imageUrl: "/hero2.jpg",
   },
   {
     id: 3,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/514410101_122104511528925027_9184013918891501447_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFdKcXHHVr0XGI9oOm0U0-KrFb8eRHwtGisVvx5EfC0aBpWpW-GiFs5k1vhOO9xtdHM_qgcFlysk8vVH_cA1LXA&_nc_ohc=LlAYx9XwrS8Q7kNvwEUW7kP&_nc_oc=AdnD11LLyCpdxFxO3FUmbbNBY1aYr54czfkxQzgmb4-rtrBr1q8YILOJdsTi5KUDTUcGXYla2ebb1bs7lLJ_Iyy9&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=0OdeQu4_oItfK19LXni5PQ&oh=00_Afgr3eORW1ufG2VJ9dQ_Mf4c6M4Zt12REITZIdOVDLESew&oe=691D14DF",
+    imageUrl: "/hero3.jpg",
   },
   {
     id: 4,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/504005542_122099837498925027_937300051770912051_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFFryUonzDOMquL9X5_xGhgZx_lLxIc7VpnH-UvEhztWlgj6r5ih3mWi-SwkvUuGSuqFuBNc5YcNc8hUD4kY4Ds&_nc_ohc=0Ho--lAbiXgQ7kNvwGtX-UW&_nc_oc=AdloMBfhB9jm50CCBTy94t1q4W4v_xEaBxD7UrvYiSiRkHP3tvOiAzfSRwehFso4E-lH39iQa8Hl6gITkGighdTt&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=Iq2EV_rFNCgRCN32WOnz-g&oh=00_Afj8LCm9_J0s1SOKmLBM6wHUPEm-xrRU19sRznWxdU7BRw&oe=691CFBFD",
+    imageUrl: "/hero4.jpg",
   },
   {
     id: 5,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/518273161_122114670314925027_3629280208411520320_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFcqGVzkqqXiAJxT2mkLHWH5Y6eQWXlfeLljp5BZeV94qHSjcuEBK4tAsxHtaWauVtfbvm9WsoTVpdUiXBVqzR1&_nc_ohc=a97HK0y4fa8Q7kNvwHqzuoJ&_nc_oc=AdmVpkpy94CTZGjA-sHZ2DiCJK5rMTn0VJs-KJiPpBdkJLwnO4TIQM5I95D1m1DQbwm3hkUkVBbE1vsSmN5Rbo7A&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=TSGscBxhUWLJFl5zcIwI1Q&oh=00_Afgi16YzHjYLWrYCt6WD5676LJ3W8xzIIdnBEyTugqfEng&oe=691CE59D",
+    imageUrl: "/hero5.jpg",
   },
   {
     id: 6,
-    imageUrl:
-      "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/518370070_122114669786925027_896254874330590842_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHNfwqkzd-Tf58grKbEbJpMK36eU-viY64rfp5T6-Jjrqj6f2Qg1nqYiCjXCZ8dQaZM3cc7Aue5SLXlabODjD8W&_nc_ohc=SmenWe7bBxUQ7kNvwEfTfea&_nc_oc=AdmW3brLfHrUKqBBXtBvdyTeQxfmoPSHaC1oYj2wKLiIUmiRmGgYuGwtcFBfzGBGMHEAKzT-QFHnWrglPWrHLP0m&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=BCZWPcSxfHtgRdYpwIJIiQ&oh=00_AfiWG3bWsHS-FO46jeIqB4FQ70IfrBI0nfSXR6ln5TLKyw&oe=691D028D",
+    imageUrl: "/hero6.jpg",
   },
 ];
 
@@ -416,8 +410,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center px-6">
           <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-8 flex justify-center items-center">
             <img
-              src="https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/518270070_122114723852925027_1474162925335887281_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGEGJwUfCEKpocFHLprtYhBYR0NvsrPIwBhHQ2-ys8jAErA9ywNY4v7wkietu-V8DeFGlfVbCED0rvowTWVJNOr&_nc_ohc=wpObEUfrdagQ7kNvwHDjq7o&_nc_oc=Adl5lGpZtr847LMMJ9w9pGyY3yUqXm6T3CWWkeqsipUrLxfeKTgSPB6O83tYHAlKNKM6ANo70rKT4rR9YVEMbJba&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=81d7bKFU8nw__R3pgS1fDQ&oh=00_AfjEdLBkMhYQO2guGb1btUU1c_solf1v6oNU_Iln4bbAEw&oe=691D11CE" /* <-- ⚠️ THAY THẾ URL NÀY */
-              alt="Logo Namgia Atelier"
+              src="/logo.jpg"
               className="w-full max-w-xs" /* Bạn có thể điều chỉnh max-w-xs nếu cần */
             />
           </div>
@@ -497,7 +490,7 @@ export default function Home() {
             </div>
             <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
               <img
-                src="https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/518275027_122114725556925027_2310468007716738461_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeGQli1Jd51rhKyo1nzvdFb9a_kqrH4pgyBr-SqsfimDIBdKAbb-9-WhiwBSIqT4K98K0a0Ptp1quPmhWXYDiYEQ&_nc_ohc=xeERsgp36AwQ7kNvwFTO5sK&_nc_oc=AdnNWDszXOKdvFoOfHDd_SR9m4C9Dy9DZYfOQvwqJ4ZrLd2zaLbMuIjSYJl7LOKqf22Iwf8ewtuNX37jdSOF6H_J&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=jylugD1RBONWx4dS5siD-g&oh=00_Afgv72fNeGc2JYaICnp3B-ROOfiIIsi9nj1ZmnCkJsRIxw&oe=691CEFC1"
+                src="/chi tiet sp 3.jpg"
                 alt="Chi tiết sản phẩm 3"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
