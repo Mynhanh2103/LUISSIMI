@@ -15,27 +15,27 @@ import heroVideo from "../assets/hero/istockphoto-1307688907-640_adpp_is.mp4";
 const carouselImages = [
   {
     id: 1,
-    imageUrl: "/image/hero1.jpg",
+    imageUrl: "/public/hero1.jpg",
   },
   {
     id: 2,
-    imageUrl: "/image/hero2.jpg",
+    imageUrl: "/public/hero2.jpg",
   },
   {
     id: 3,
-    imageUrl: "/image/hero3.jpg",
+    imageUrl: "/public/hero3.jpg",
   },
   {
     id: 4,
-    imageUrl: "/image/hero4.jpg",
+    imageUrl: "/public/hero4.jpg",
   },
   {
     id: 5,
-    imageUrl: "/image/hero5.jpg",
+    imageUrl: "/public/hero5.jpg",
   },
   {
     id: 6,
-    imageUrl: "/image/hero6.jpg",
+    imageUrl: "/public/hero6.jpg",
   },
 ];
 
@@ -410,7 +410,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center px-6">
           <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-8 flex justify-center items-center">
             <img
-              src="/image/logo.jpg"
+              src="/public/logo.jpg"
               className="w-full max-w-xs" /* Bạn có thể điều chỉnh max-w-xs nếu cần */
             />
           </div>
@@ -490,7 +490,7 @@ export default function Home() {
             </div>
             <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
               <img
-                src="/image/chi tiet sp 3.jpg"
+                src="/public/chi tiet sp 3.jpg"
                 alt="Chi tiết sản phẩm 3"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
