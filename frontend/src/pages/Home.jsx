@@ -234,7 +234,7 @@ export default function Home() {
         container.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [carouselImages.length]);
+  }, []);
   // --- Hết Logic cho Carousel ---
 
   return (
@@ -394,7 +394,7 @@ export default function Home() {
                 key={index}
                 onClick={() => scrollToSlide(index)}
                 className={`w-2.5 h-2.5 rounded-full transition-all duration-300
-                  ${
+                  {
                     activeIndex === index
                       ? "bg-stone-800 scale-110"
                       : "bg-stone-300 hover:bg-stone-400"
