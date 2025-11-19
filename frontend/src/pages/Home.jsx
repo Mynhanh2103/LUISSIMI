@@ -490,7 +490,7 @@ export default function Home() {
             </div>
             <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
               <img
-                src="/chi tiet sp 3.jpg"
+                src="https://tronhouse.com/assets/data/editor/source/6-tips-chup-anh-tui-xach-dung-chuan/chup-anh-tui-xach-3.jpg"
                 alt="Chi tiết sản phẩm 3"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
