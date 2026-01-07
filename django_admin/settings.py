@@ -15,6 +15,7 @@ import os
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -207,3 +208,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
 }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Render sẽ cung cấp DATABASE_URL qua biến môi trường
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        conn_max_age=600
+    )
+}
+
+# QUAN TRỌNG: Supabase yêu cầu SSL để kết nối an toàn
+if not DEBUG:
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
