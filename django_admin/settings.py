@@ -233,3 +233,10 @@ DATABASES = {
 # QUAN TRỌNG: Supabase yêu cầu SSL để kết nối an toàn
 if not DEBUG:
     DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

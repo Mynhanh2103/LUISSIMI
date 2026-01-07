@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.core.cache import cache
 from django.utils.html import format_html
 from .models import Product, Order, ProductImage, OrderItem
 from .models import HeroSection, BrandStory, CraftsmanshipItem
@@ -65,34 +66,45 @@ class LuissimiAdminSite(admin.AdminSite):
     index_template = "admin/dashboard.html"
 
     def index(self, request, extra_context=None):
-        # 1. Tính toán các con số thống kê (Logic đồng bộ với Node.js)
+        # Bước A: Thử lấy dữ liệu từ "tờ giấy ghi chú" (Cache)
+        dashboard_data = cache.get('luissimi_stats')
+
+        # Bước B: Nếu "tờ giấy" trống (chưa tính hoặc đã hết hạn)
+        if dashboard_data is None:
+            # Thực hiện các phép tính nặng (Giữ nguyên logic của bạn)
+            revenue = Order.objects.filter(
+                status__in=['paid', 'shipped', 'completed']
+            ).aggregate(total=Sum('total_price'))['total'] or 0
+
+            top_products = Product.objects.annotate(
+                sold=Sum('orderitem__quantity')
+            ).filter(sold__gt=0).order_by('-sold')[:5]
+
+            # Gom kết quả vào một gói dữ liệu
+            dashboard_data = {
+                'total_revenue': revenue,
+                'top_products': top_products,
+            }
+            
+            # Lưu vào Cache trong 900 giây (tương đương 15 phút)
+            cache.set('luissimi_stats', dashboard_data, 900)
+
+        # Bước C: Các phép tính nhẹ (count) thì để bên ngoài cho chính xác
         total_users = User.objects.count()
         total_products = Product.objects.count()
         total_orders = Order.objects.count()
-
-        # Doanh thu từ đơn hàng đã thanh toán/hoàn thành
-        revenue = Order.objects.filter(
-            status__in=['paid', 'shipped', 'completed']
-        ).aggregate(total=Sum('total_price'))['total'] or 0
-
-        # 2. Top 5 sản phẩm bán chạy nhất dựa trên OrderItem
-        top_products = Product.objects.annotate(
-            sold=Sum('orderitem__quantity')
-        ).filter(sold__gt=0).order_by('-sold')[:5]
-
-        # 3. Lấy 4 sản phẩm mới nhất cho "Bộ sưu tập nổi bật"
         featured_products = Product.objects.all().order_by('-created_at')[:4]
 
-        # 4. Đưa toàn bộ dữ liệu vào context của Template
+        # Bước D: Đưa dữ liệu vào giao diện (Sử dụng dashboard_data)
         extra_context = extra_context or {}
         extra_context.update({
             'total_users': total_users,
             'total_products': total_products,
             'total_orders': total_orders,
-            'total_revenue': revenue,
-            'top_products': top_products,
+            'total_revenue': dashboard_data['total_revenue'], # Lấy từ Cache
+            'top_products': dashboard_data['top_products'],   # Lấy từ Cache
             'featured_products': featured_products,
-            'brand_color': '#C6A667', # Màu Gold đặc trưng
+            'brand_color': '#C6A667',
         })
         
         return super().index(request, extra_context)
