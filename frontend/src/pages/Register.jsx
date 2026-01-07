@@ -11,14 +11,11 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/admin/auth/register`,
-        {
-          username,
-          email,
-          password,
-        }
-      );
+      await axios.post(`${import.meta.env.VITE_API_URL}/admin/auth/register`, {
+        username,
+        email,
+        password,
+      });
       navigate("/login");
     } catch (err) {
       console.error(err);

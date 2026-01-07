@@ -13,3 +13,23 @@ h2,
 h3 {
   @apply font-playfair text-primary;
 }
+@keyframes heart-fly-up {
+  0% { opacity: 0; transform: scale(0.5) translateY(0); }
+  20% { opacity: 1; transform: scale(1.2) translateY(-20px); }
+  100% { opacity: 0; transform: scale(1.5) translateY(-100px); }
+}
+
+.animate-heart-fly {
+  animation: heart-fly-up 0.8s ease-out forwards;
+}
+
+/* Style cho Masonry để các cột không bị dính nhau */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -24px; /* Khoảng cách giữa các cột */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 24px; /* Khoảng cách giữa các cột */
+  background-clip: padding-box;
+}

@@ -1,137 +1,115 @@
+// src/components/ProductCard.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Heart, ShoppingBag } from "lucide-react";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
 
-// Hàm định dạng tiền tệ
-const formatCurrency = (amount) => {
-  if (typeof amount !== "number") {
-    amount = Number(amount) || 0;
-  }
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
-};
-
-// Component nhận thêm prop "onQuickView" (có thể có hoặc không)
-export default function ProductCard({ product, onQuickView }) {
-  const [adding, setAdding] = useState(false);
+export default function ProductCard({
+  product,
+  onQuickView,
+  isLiked,
+  onWishlist,
+}) {
   const navigate = useNavigate();
+  const [adding, setAdding] = useState(false);
 
-  const img = product?.images?.[0]?.url || product?.image || "/placeholder.png";
+  // SỬA: Cấu trúc ảnh từ Django
+  const img =
+    product?.images?.[0]?.image || product?.image || "/placeholder.png";
 
-  const addToCart = async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+  // ProductCard.jsx
+
+  // SỬA: Hàm này bây giờ chỉ nhận product, không nhận event nữa
+  const handleAddToCart = async (product) => {
     setAdding(true);
     try {
-      await api.post("/cart/add", {
-        productId: product._id,
-        quantity: 1,
-      });
-      alert("Đã thêm vào giỏ hàng!");
-    } catch (e) {
-      console.error("❌ Lỗi khi thêm vào giỏ:", e.response?.data || e.message);
-      alert(e?.response?.data?.message || "Không thể thêm vào giỏ hàng.");
+      const token = localStorage.getItem("token");
+      if (token) {
+        // Gửi lên Django
+        await api.post("/cart/add/", {
+          productId: product.id,
+          quantity: 1,
+        });
+        alert("🛒 Đã thêm vào giỏ hàng hệ thống!");
+      } else {
+        // Lưu LocalStorage cho khách
+        let localCart = JSON.parse(localStorage.getItem("local_cart") || "[]");
+        const existing = localCart.find(
+          (item) => item.product.id === product.id
+        );
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          localCart.push({ product: product, quantity: 1, id: Date.now() });
+        }
+        localStorage.setItem("local_cart", JSON.stringify(localCart));
+        alert("🛍️ Đã thêm vào giỏ hàng!");
+      }
+    } catch (err) {
+      alert("Không thể thêm vào giỏ hàng.");
     } finally {
       setAdding(false);
     }
   };
 
-  // Hàm xử lý khi nhấn nút "Xem nhanh"
-  const handleQuickView = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (onQuickView) {
-      onQuickView(product); // Gọi hàm onQuickView từ cha
-    }
-  };
-
   return (
-    <article className="bg-[var(--card)] rounded-2xl overflow-hidden shadow-sm border border-[rgba(255,255,255,0.06)] h-full flex flex-col">
-      {/* Ảnh sản phẩm */}
-      <div className="relative bg-[var(--muted-2)] group">
-        <Link to={`/product/${product._id}`} className="block">
-          <div className="w-full aspect-square flex items-center justify-center overflow-hidden">
-            <img
-              src={img}
-              alt={product?.name}
-              className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-              loading="lazy"
-            />
-          </div>
+    <div className="group flex flex-col bg-white rounded-sm overflow-hidden border border-stone-100 transition-all hover:shadow-xl relative">
+      {/* Khung ảnh */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-stone-50">
+        <Link to={`/product/${product.id}`}>
+          <img
+            src={img}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
         </Link>
 
-        {/* --- DÀNH CHO DESKTOP (Hover Effect) --- */}
-        <div
-          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 
-                     hidden md:flex flex-col justify-center items-center gap-3"
+        {/* Nút Tim */}
+        <button
+          onClick={onWishlist}
+          className="absolute top-3 right-3 z-20 p-2 bg-white/40 backdrop-blur-md rounded-full hover:bg-white transition-all"
         >
-          {/* ▼▼▼ ĐÃ SỬA LẠI ▼▼▼ */}
-          {/* Nếu có onQuickView, hiển thị "Xem nhanh" */}
-          {onQuickView ? (
-            <button
-              onClick={handleQuickView}
-              className="bg-white text-stone-900 text-sm px-5 py-2.5 rounded-full shadow-md hover:bg-stone-200 transition"
-            >
-              Xem nhanh
-            </button>
-          ) : (
-            // Nếu không, hiển thị "Xem chi tiết"
-            <button
-              onClick={() => navigate(`/product/${product._id}`)}
-              className="bg-white text-stone-900 text-sm px-5 py-2.5 rounded-full shadow-md hover:bg-stone-200 transition"
-            >
-              Xem chi tiết
-            </button>
-          )}
-          {/* ▲▲▲ HẾT PHẦN SỬA ▲▲▲ */}
+          <Heart
+            size={18}
+            className={isLiked ? "fill-red-500 text-red-500" : "text-stone-600"}
+          />
+        </button>
 
+        {/* Nút Xem nhanh (Hiện khi hover) */}
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
           <button
-            onClick={addToCart}
-            disabled={adding}
-            className="bg-[var(--accent,#c29200)] text-white text-sm px-5 py-2.5 rounded-full shadow-md hover:bg-[#a57a00] transition disabled:opacity-50"
+            onClick={() => onQuickView(product)}
+            className="bg-white text-stone-900 px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all"
           >
-            {adding ? "Đang thêm..." : "Thêm vào giỏ"}
+            Xem nhanh
           </button>
         </div>
       </div>
 
-      {/* Meta (Thông tin bên dưới) */}
-      <div className="p-4 flex flex-col flex-grow">
-        <Link to={`/product/${product._id}`}>
-          <h3 className="text-[var(--text)] font-medium line-clamp-1">
-            {product?.name}
-          </h3>
-        </Link>
-        <p className="text-[var(--muted)] text-sm mt-1 line-clamp-2 min-h-[40px]">
-          {product?.description}
-        </p>
-
-        <div className="mt-auto pt-3">
-          <span className="text-[var(--accent)] font-semibold text-lg">
-            {formatCurrency(product?.price)}
-          </span>
-        </div>
-
-        {/* --- DÀNH CHO MOBILE (Luôn hiện) --- */}
-        <div className="mt-3 flex items-center justify-between md:hidden">
-          <Link
-            to={`/product/${product._id}`}
-            className="px-3 py-2 text-sm rounded-md border border-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.04)]"
-          >
-            Chi tiết
+      {/* Thông tin chữ */}
+      <div className="p-5 flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-2">
+          <Link to={`/product/${product.id}`}>
+            <h3 className="font-playfair font-bold text-stone-800 text-lg hover:text-[#8B5E34] transition-colors">
+              {product.name}
+            </h3>
           </Link>
           <button
-            onClick={addToCart}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAddToCart(product); // Gọi hàm với đối tượng product
+            }}
             disabled={adding}
-            className="px-3 py-2 text-sm rounded-md bg-[var(--accent)] text-white hover:opacity-90 disabled:opacity-60"
+            className="text-stone-400 hover:text-stone-900 transition-colors"
           >
-            {adding ? "Đang thêm..." : "Thêm vào giỏ"}
+            <ShoppingBag size={18} />
           </button>
         </div>
+        <p className="text-[#8B5E34] font-bold tracking-tight">
+          {Number(product.price).toLocaleString()}₫
+        </p>
       </div>
-    </article>
+    </div>
   );
 }

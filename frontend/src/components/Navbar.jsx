@@ -10,7 +10,7 @@ export default function Header() {
         {/* Logo (giữ nguyên) */}
         <Link to="/" className="flex items-center gap-3 z-50">
           <img
-            src="https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/518270070_122114723852925027_1474162925335887281_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGEGJwUfCEKpocFHLprtYhBYR0NvsrPIwBhHQ2-ys8jAErA9ywNY4v7wkietu-V8DeFGlfVbCED0rvowTWVJNOr&_nc_ohc=wpObEUfrdagQ7kNvwHDjq7o&_nc_oc=Adl5lGpZtr847LMMJ9w9pGyY3yUqXm6T3CWWkeqsipUrLxfeKTgSPB6O83tYHAlKNKM6ANo70rKT4rR9YVEMbJba&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=_bCKbCcigsYtc4qmWmTtpg&oh=00_Afgn9q9_qM79A0SbCMucg8qavqqc9xQQV3S0JmGE5lZHzg&oe=691D4A0E" // ⚠️ Thay bằng logo của bạn
+            src="/public/logo.jpg"
             alt="Luissimi Logo"
             className="h-8 w-auto"
           />

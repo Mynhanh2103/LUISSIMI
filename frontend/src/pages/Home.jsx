@@ -1,80 +1,72 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Award, Hammer, Infinity } from "lucide-react";
+import api from "../api/axios";
+import Masonry from "react-masonry-css";
+import PinterestCard from "../components/PinterestCard";
+import FeaturedInstagramCard from "../components/FeaturedInstagramCard";
 // --- Helper Function ---
-// Hàm định dạng tiền tệ Việt Nam
-/*const formatCurrency = (amount) => {
+const formatCurrency = (amount) => {
+  if (typeof amount !== "number") amount = Number(amount) || 0;
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(amount);
-};*/
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-import api from "../api/axios";
-import heroVideo from "../assets/hero/istockphoto-1307688907-640_adpp_is.mp4";
-// Dữ liệu cho carousel (không có tiêu đề)
-const carouselImages = [
-  {
-    id: 1,
-    imageUrl: "/public/hero1.jpg",
-  },
-  {
-    id: 2,
-    imageUrl: "/public/hero2.jpg",
-  },
-  {
-    id: 3,
-    imageUrl: "/public/hero3.jpg",
-  },
-  {
-    id: 4,
-    imageUrl: "/public/hero4.jpg",
-  },
-  {
-    id: 5,
-    imageUrl: "/public/hero5.jpg",
-  },
-  {
-    id: 6,
-    imageUrl: "/public/hero6.jpg",
-  },
-];
+};
 
-// --- Component Con ---
+// Cấu hình số cột cho từng loại màn hình
+const masonryBreakpoints = {
+  default: 4,
+  1024: 3,
+  768: 2,
+  640: 1,
+};
+
+const getCoreIcon = (title) => {
+  const t = title.toLowerCase();
+  if (t.includes("material") || t.includes("liệu"))
+    return <Award className="text-stone-800" size={24} />;
+  if (t.includes("craft") || t.includes("thủ công"))
+    return <Hammer className="text-stone-800" size={24} />;
+  return <Infinity className="text-stone-800" size={24} />;
+};
+
+// --- Component Con: ProductCard ---
 function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
+
+  // Cập nhật: Lấy trường .image từ mảng images của Django Serializer
   const imageSrc =
     product.images && product.images.length > 0
-      ? product.images[0].url
-      : "https://placehold.co/400x500/EEE/AAA?text=No+Image";
+      ? product.images[0].image
+      : product.image || "https://placehold.co/400x500/EEE/AAA?text=No+Image";
 
   return (
     <div
-      className="relative group overflow-hidden rounded-lg shadow-sm"
+      className="relative group overflow-hidden rounded-lg shadow-sm h-full flex flex-col bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <img
-        src={imageSrc}
-        alt={product.name}
-        className="w-full h-auto object-cover aspect-[4/5] transition-transform duration-500 ease-in-out group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <Link to={`/product/${product.id}`} className="block overflow-hidden">
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className="w-full h-auto object-cover aspect-[4/5] transition-transform duration-500 ease-in-out group-hover:scale-105"
+        />
+      </Link>
+      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
 
-      {/* Thông tin sản phẩm */}
-      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
         <h3 className="text-white text-lg font-playfair mb-1 truncate">
           {product.name}
         </h3>
         <p className="text-stone-200 text-sm font-light">
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(product.price)}
+          {formatCurrency(product.price)}
         </p>
       </div>
 
-      {/* Nút "Xem chi tiết" */}
-      <button
+      <Link
+        to={`/product/${product.id}`}
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 text-stone-900 text-sm px-5 py-2.5 rounded-full shadow-md
                     transition-all duration-300 ease-in-out
                     ${
@@ -82,67 +74,7 @@ function ProductCard({ product }) {
                     }`}
       >
         Xem chi tiết
-      </button>
-    </div>
-  );
-}
-function FeaturedProductPost({ product, align = "left" }) {
-  const imageSrc =
-    product.images && product.images.length > 0
-      ? product.images[0].url
-      : "https://placehold.co/600x700/EEE/AAA?text=No+Image";
-
-  // Hàm định dạng tiền tệ (thêm vào đây cho an toàn)
-  const formatCurrency = (amount) => {
-    if (typeof amount !== "number") return "Giá không xác định";
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
-
-  const imageOrder = align === "left" ? "md:order-1" : "md:order-2";
-  const textOrder = align === "left" ? "md:order-2" : "md:order-1";
-
-  return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-16">
-      {/* Cột Hình ảnh (Sửa <a> thành <Link>) */}
-      <div
-        className={`rounded-lg overflow-hidden shadow-xl ${imageOrder} group`}
-      >
-        {/* ▼▼▼ SỬA DÒNG NÀY ▼▼▼ */}
-        <Link to={`/product/${product._id}`}>
-          <img
-            src={imageSrc}
-            alt={product.name}
-            className="w-full h-auto object-cover aspect-[4/5] transition-transform duration-500 ease-in-out group-hover:scale-105"
-          />
-        </Link>
-        {/* ▲▲▲ SỬA DÒNG NÀY ▲▲▲ */}
-      </div>
-
-      {/* Cột Văn bản (Caption, Giá) */}
-      <div className={`text-left ${textOrder}`}>
-        <h3 className="text-3xl font-playfair text-stone-800 mb-3">
-          {product.name}
-        </h3>
-        <p className="text-2xl font-semibold text-amber-700 mb-5">
-          {formatCurrency(product.price)}
-        </p>
-        <p className="text-stone-600 leading-relaxed mb-6">
-          {product.description ||
-            "Mỗi sản phẩm là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ bởi những nghệ nhân tài hoa, mang theo câu chuyện về đam mê..."}
-        </p>
-
-        {/* ▼▼▼ SỬA DÒNG NÀY ▼▼▼ */}
-        <Link
-          to={`/product/${product._id}`}
-          className="inline-block bg-stone-800 text-white font-semibold py-3 px-6 rounded-md tracking-wide hover:bg-stone-700 transition-colors"
-        >
-          Xem chi tiết
-        </Link>
-        {/* ▲▲▲ SỬA DÒNG NÀY ▲▲▲ */}
-      </div>
+      </Link>
     </div>
   );
 }
@@ -150,389 +82,221 @@ function FeaturedProductPost({ product, align = "left" }) {
 // --- Component Chính ---
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [cmsData, setCmsData] = useState({
+    hero: null,
+    story: null,
+    crafts: [],
+  });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  // State và Ref cho Carousel
-  const [activeIndex, setActiveIndex] = useState(0);
   const scrollContainerRef = useRef(null);
 
-  // Hàm Debounce
-  const debounce = (func, delay) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), delay);
-    };
-  };
-
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/products");
-        setProducts(res.data.products || res.data || []);
-      } catch (err) {
-        console.error("❌ Lỗi tải sản phẩm:", err);
+        setLoading(true);
+        // Gọi đồng thời tất cả các API CMS và Sản phẩm nổi bật
+        const [heroRes, storyRes, craftsRes, prodRes] = await Promise.all([
+          api.get("/hero/"),
+          api.get("/brand-story/"),
+          api.get("/craftsmanship/"),
+          api.get("/products/?is_featured=true"),
+        ]);
+
+        // Hàm helper để trích xuất dữ liệu từ kết quả trả về của Django (có results hoặc không)
+        const extractData = (res) =>
+          res.data.results || (Array.isArray(res.data) ? res.data : []);
+
+        const heroList = extractData(heroRes);
+        const storyList = extractData(storyRes);
+        console.log("Dữ liệu Story nhận được:", storyRes.data);
+        setCmsData({
+          hero: heroList[0] || null, // Lấy bản ghi đầu tiên đang active
+          story: storyList[0] || null,
+          crafts: extractData(craftsRes),
+        });
+
+        setProducts(extractData(prodRes));
+      } catch (error) {
+        console.error("Lỗi đồng bộ dữ liệu Admin:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
-
-  // --- Logic cho Carousel ---
-
-  // Hàm cuộn đến slide
-  const scrollToSlide = useCallback((index) => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const slideWidth = container.scrollWidth / carouselImages.length;
-      const scrollLeft =
-        slideWidth * index - (container.clientWidth - slideWidth) / 2;
-      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
-      setActiveIndex(index);
-    }
-  }, []);
-
-  // Nút Previous
-  const handlePrev = () => {
-    const newIndex =
-      activeIndex === 0 ? carouselImages.length - 1 : activeIndex - 1;
-    scrollToSlide(newIndex);
-  };
-
-  // Nút Next
-  const handleNext = () => {
-    const newIndex =
-      activeIndex === carouselImages.length - 1 ? 0 : activeIndex + 1;
-    scrollToSlide(newIndex);
-  };
-
-  // Cập nhật dot khi người dùng tự cuộn
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-
-    const handleScroll = debounce(() => {
-      if (container) {
-        const slideWidth = container.scrollWidth / carouselImages.length;
-        const newIndex = Math.round(
-          (container.scrollLeft + (container.clientWidth - slideWidth) / 2) /
-            slideWidth
-        );
-        if (newIndex >= 0 && newIndex < carouselImages.length) {
-          setActiveIndex(newIndex);
-        }
-      }
-    }, 150); // 150ms delay
-
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-    }
-
-    // Cleanup
-    return () => {
-      if (container) {
-        container.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, []);
-  // --- Hết Logic cho Carousel ---
 
   return (
     <main className="bg-stone-50 min-h-screen text-stone-900 font-inter">
-      {/* CSS Tùy chỉnh
-        1. Ẩn thanh cuộn cho carousel
-        2. Hiệu ứng "tỏa sáng" (radiant-glow) cho tiêu đề Hero
-      */}
       <style>{`
-        .carousel-container {
-          -ms-overflow-style: none; /* IE và Edge */
-          scrollbar-width: none; /* Firefox */
-        }
-        .carousel-container::-webkit-scrollbar {
-          display: none; /* Chrome, Safari và Opera */
-        }
-        
-        /* Hiệu ứng tỏa sáng Vàng + Bạc (ĐÃ ĐIỀU CHỈNH) */
-        @keyframes radiant-glow {
-          0% {
-            /* Giảm độ sáng và độ lan toả */
-            text-shadow: 0 0 4px rgba(255, 255, 255, 0.1), 
-                         0 0 8px rgba(255, 255, 255, 0.1), 
-                         0 0 12px rgba(230, 210, 170, 0.2); /* E6D2AA */
-          }
-          50% {
-            /* Giảm độ sáng và độ lan toả (GIẢM THÊM) */
-            text-shadow: 0 0 6px rgba(255, 255, 255, 0.4), 
-                         0 0 10px rgba(255, 255, 255, 0.4), 
-                         0 0 16px rgba(230, 210, 170, 0.6); /* E6D2AA */
-          }
-          100% {
-            /* Giảm độ sáng và độ lan toả */
-            text-shadow: 0 0 4px rgba(255, 255, 255, 0.3), 
-                         0 0 8px rgba(255, 255, 255, 0.3), 
-                         0 0 12px rgba(230, 210, 170, 0.5); /* E6D2AA */
-          }
-        }
-
-        .hero-title-radiant {
-          /* Màu chữ vàng champagne nhạt */
-          color: #c29200; 
-          font-weight: 700;
-          /* Áp dụng animation (ĐÃ TĂNG THỜI GIAN) */
-          /*animation: radiant-glow 8s ease-in-out infinite;*/
-        }
+        .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        .hero-title-radiant { color: #c29200; font-weight: 700; }
       `}</style>
 
-      {/* 1️⃣ Hero Section (Ảnh) 
+      {/* 1️⃣ Hero Section - Lấy từ Django Admin */}
       <section className="relative h-[90vh] w-full overflow-hidden bg-black">
-      
-        <img
-          src="https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/518270070_122114723852925027_1474162925335887281_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGEGJwUfCEKpocFHLprtYhBYR0NvsrPIwBhHQ2-ys8jAErA9ywNY4v7wkietu-V8DeFGlfVbCED0rvowTWVJNOr&_nc_ohc=wpObEUfrdagQ7kNvwHuJRqi&_nc_oc=AdmI9udcPcq56U_g4Lw3Tx2tsbvaMxtIouMzTqP8eaq8Em2cU63xRwFB2JJ1V4btSEqlzVBNPTmoHeWxtEEy6OxO&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=vgcM8jZzs3O9TSe_1ecPgw&oh=00_AfgIVR-J-ONN2JCbtMNCzpHvzjLSisPbv4HD2etigli-7A&oe=691AA70E"
-          alt="LUISSIMI Hero Image"
-          className="w-full h-full object-contain"
-        />
-
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-4">
-         
-        </div>
-      </section>*/}
-      <section className="relative h-[90vh] w-full overflow-hidden bg-black">
-        <video
-          src={heroVideo}
-          className="w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        />
-
-        {/* Overlay & slogan */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <h1 className="hero-title-radiant text-5xl md:text-6xl font-playfair tracking-wide text-center">
-            LUISSIMI
+        {cmsData.hero?.is_video ? (
+          <video
+            src={cmsData.hero.media}
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        ) : (
+          <img
+            src={
+              cmsData.hero?.media ||
+              "https://placehold.co/1920x1080?text=LUISSIMI+LUXURY"
+            }
+            className="w-full h-full object-cover"
+            alt="Hero Banner"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="hero-title-radiant text-5xl md:text-7xl font-playfair tracking-wide mb-4 uppercase">
+            {cmsData.hero?.title || "LUISSIMI"}
           </h1>
+          <p className="text-white/80 text-lg md:text-xl font-light tracking-widest uppercase italic">
+            {cmsData.hero?.subtitle}
+          </p>
         </div>
       </section>
 
-      {/* 2️⃣ Khám phá phong cách (Carousel) */}
+      {/* 2️⃣ Khám phá phong cách (Carousel Sản phẩm nổi bật) */}
       <section className="py-16 md:py-20 bg-stone-50">
         <div className="max-w-7xl mx-auto relative px-4">
-          {/* Vùng chứa carousel */}
           <div
             ref={scrollContainerRef}
             className="flex space-x-4 md:space-x-6 overflow-x-auto snap-x snap-mandatory carousel-container"
           >
-            {carouselImages.map((img, index) => (
-              <a
-                key={img.id}
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSlide(index);
-                }}
-                className="flex-none w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 snap-center block group"
+            {products.map((item) => (
+              <div
+                key={item.id}
+                className="flex-none w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4 snap-center"
               >
-                <div className="overflow-hidden rounded-lg relative aspect-[4/5] shadow-md">
-                  <img
-                    src={img.imageUrl}
-                    alt={`Phong cách ${img.id}`}
-                    className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/10"></div>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {/* Nút điều hướng */}
-          {/* Nút Trái */}
-          <button
-            onClick={handlePrev}
-            className="absolute top-1/2 left-0 md:-left-6 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2.5 shadow-md transition z-10"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 text-stone-800"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          </button>
-
-          {/* Nút Phải */}
-          <button
-            onClick={handleNext}
-            className="absolute top-1/2 right-0 md:-right-6 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2.5 shadow-md transition z-10"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 text-stone-800"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </button>
-
-          {/* Chấm tròn điều hướng */}
-          <div className="flex justify-center space-x-2 mt-8">
-            {carouselImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => scrollToSlide(index)}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300
-                  {
-                    activeIndex === index
-                      ? "bg-stone-800 scale-110"
-                      : "bg-stone-300 hover:bg-stone-400"
-                  }
-                `}
-              ></button>
+                <ProductCard product={item} />
+              </div>
             ))}
           </div>
         </div>
       </section>
-      {/* 3️⃣ Câu chuyện thương hiệu (Thiết kế lại) */}
+
+      {/* 3️⃣ Câu chuyện thương hiệu - Lấy từ Django Admin */}
       <section className="py-16 md:py-24 bg-white">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center px-6">
-          <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-8 flex justify-center items-center">
+          <div className="rounded-lg overflow-hidden border border-gray-100 shadow-sm bg-stone-50 p-4 flex justify-center items-center">
             <img
-              src="/public/logo.jpg"
-              className="w-full max-w-xs" /* Bạn có thể điều chỉnh max-w-xs nếu cần */
+              src={cmsData.story?.image || "/public/logo.jpg"}
+              className="w-full h-auto object-cover rounded shadow-inner"
+              alt="Brand Heritage"
             />
           </div>
 
           <div className="text-left">
-            {/* Pre-title */}
             <h3 className="text-sm font-semibold tracking-widest text-amber-700 uppercase mb-3">
-              Nghệ thuật thủ công
+              {cmsData.story?.heading || "NGHỆ THUẬT THỦ CÔNG"}
             </h3>
-
             <h2 className="text-4xl font-playfair tracking-wide mb-6 text-stone-800">
-              Câu chuyện thương hiệu
+              {cmsData.story?.sub_heading || "Câu chuyện thương hiệu"}
             </h2>
-
-            {/* Dùng border-l ở đây */}
             <div className="border-l-2 border-amber-700 pl-6 space-y-4">
-              <p className="text-stone-600 leading-relaxed">
-                LUISSIMI được thành lập với sứ mệnh mang lại sự tinh tế và sang
-                trọng trong từng sản phẩm da thật. Chúng tôi kết hợp tay nghề
-                thủ công truyền thống cùng thiết kế đương đại để tạo nên những
-                chiếc túi mang đậm dấu ấn cá nhân.
+              <p className="text-stone-600 leading-relaxed whitespace-pre-line text-lg">
+                {/* Sử dụng white-space: pre-line để giữ các dòng trống từ Admin */}
+                {cmsData.story?.content ||
+                  "Đang cập nhật câu chuyện thương hiệu của chúng tôi..."}
               </p>
-              <p className="text-stone-600 leading-relaxed">
-                Mỗi sản phẩm là một tác phẩm nghệ thuật, được chăm chút tỉ mỉ
-                bởi những nghệ nhân tài hoa, mang theo câu chuyện về đam mê và
-                sự hoàn hảo.
-              </p>
-            </div>
-
-            {/* Nút CTA */}
-            <a
-              href="/about"
-              className="inline-block bg-stone-800 text-white font-semibold py-3 px-6 rounded-md tracking-wide hover:bg-stone-700 transition-colors mt-8"
-            >
-              Khám phá thêm
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* 4️⃣ Bộ sưu tập nổi bật */}
-      <section className="py-16 md:py-20 px-6 bg-stone-50">
-        <h2 className="text-3xl md:text-4xl font-playfair text-center mb-12">
-          Bộ sưu tập nổi bật
-        </h2>
-        {loading ? (
-          <p className="text-center text-stone-500">Đang tải...</p>
-        ) : (
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {products.slice(0, 4).map((p) => (
-              <ProductCard key={p._id} product={p} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* 5️⃣ Nghệ thuật thủ công (Lookbook) */}
-      <section className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-playfair text-center mb-12">
-            Nghệ thuật thủ công
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
-              <img
-                src="https://images.pexels.com/photos/6649424/pexels-photo-6649424.jpeg"
-                alt="Chi tiết sản phẩm 1"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
-              <img
-                src="https://images.pexels.com/photos/6650020/pexels-photo-6650020.jpeg"
-                alt="Chi tiết sản phẩm 2"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="relative overflow-hidden rounded-lg shadow-md aspect-[4/5] group">
-              <img
-                src="/public/chi tiet sp 3.jpg"
-                alt="Chi tiết sản phẩm 3"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- ✨ SECTION 6 ĐÃ ĐƯỢC THAY THẾ ✨ --- */}
-      {/* 6️⃣ Sản phẩm nổi bật (Layout "IG Post" So Le) */}
-      <section className="py-16 md:py-24 bg-stone-100">
+      {/* 4 Giá trị cốt lõi (Lookbook) - Lấy từ Django Admin */}
+      <section className="py-20 bg-stone-50">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-playfair text-center mb-16 text-stone-800">
-            Từ bộ sưu tập
+          {/* Tiêu đề chính: Sử dụng màu nâu đồng #8B5E34 */}
+          <h2 className="text-3xl md:text-4xl font-playfair text-center mb-16 uppercase tracking-[0.2em] text-[#8B5E34]">
+            Giá trị cốt lõi
           </h2>
 
-          {loading ? (
-            <p className="text-center text-stone-500">Đang tải...</p>
-          ) : (
-            // Dùng flex-col để các post xếp chồng lên nhau
-            <div className="flex flex-col gap-16 md:gap-24">
-              {/* Lấy 3 sản phẩm đầu tiên để làm nổi bật */}
-              {products.slice(0, 3).map((p, index) => (
-                <FeaturedProductPost
-                  key={p._id}
-                  product={p}
-                  // Cứ mỗi 2 sản phẩm thì đổi layout (so le)
-                  align={index % 2 === 0 ? "left" : "right"}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {(Array.isArray(cmsData.crafts) ? cmsData.crafts : []).map(
+              (item) => (
+                <div key={item.id} className="flex flex-col group">
+                  <div className="relative aspect-square overflow-hidden bg-white mb-6 shadow-sm border border-stone-100">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                    {/* Icon: Sử dụng màu nâu đồng để đồng bộ */}
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-bl-2xl shadow-md border-l border-b border-stone-100">
+                      {React.cloneElement(getCoreIcon(item.title), {
+                        className: "text-[#8B5E34]",
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Tiêu đề Card: Màu nâu gỗ đậm #4E342E tạo sự vững chãi */}
+                    <h3 className="text-2xl font-bold font-playfair text-[#4E342E] tracking-tight">
+                      {item.title}
+                    </h3>
+                    {/* Mô tả: Màu nâu xám nhẹ để không làm lấn lướt tiêu đề */}
+                    <p className="text-[#6D4C41] leading-relaxed text-sm md:text-base font-inter">
+                      {item.description ||
+                        "Cam kết mang đến sự tinh tế và chất lượng vượt thời gian."}
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 5 Grid Bộ sưu tập nổi bật */}
+      <section className="py-24 px-6 bg-stone-50">
+        <div className="max-w-5xl mx-auto">
+          {/* Heading Section */}
+          <div className="mb-20">
+            <h2 className="text-4xl md:text-5xl font-playfair uppercase tracking-[0.2em] text-stone-800">
+              Sản phẩm <br />{" "}
+              <span className="ml-12 italic text-amber-800">Nổi bật</span>
+            </h2>
+            <div className="w-24 h-0.5 bg-stone-300 mt-6 ml-1"></div>
+          </div>
+
+          {/* Grid so le (Staggered Layout) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-20">
+            {products
+              .filter((p) => p.is_featured)
+              .map((item, index) => (
+                <FeaturedInstagramCard
+                  key={item.id}
+                  product={item}
+                  index={index}
                 />
               ))}
-            </div>
-          )}
-
-          {/* Nút Xem tất cả */}
-          <div className="text-center mt-16 md:mt-24">
-            <button
-              onClick={() => navigate("/collection")}
-              className="border border-stone-800 text-stone-800 font-semibold px-8 py-3 rounded-full hover:bg-stone-800 hover:text-white transition-all duration-300 tracking-wide"
-            >
-              Xem tất cả sản phẩm
-            </button>
           </div>
+        </div>
+      </section>
+
+      {/* 6️⃣ Footer CTA Final */}
+      <section className="py-20 md:py-28 bg-stone-900 text-white border-t border-stone-800">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-playfair mb-8 italic leading-snug">
+            Sự sang trọng bắt đầu từ những chi tiết nhỏ nhất.
+          </h2>
+          <div className="w-20 h-0.5 bg-amber-600 mx-auto mb-10"></div>
+          <button
+            onClick={() => navigate("/collection")}
+            className="mt-4 border border-amber-600 text-amber-600 font-bold px-12 py-4 rounded-full hover:bg-amber-600 hover:text-stone-900 transition-all duration-500 tracking-[0.2em] text-xs"
+          >
+            XEM TẤT CẢ SẢN PHẨM
+          </button>
         </div>
       </section>
     </main>
