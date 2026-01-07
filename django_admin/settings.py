@@ -29,7 +29,15 @@ SECRET_KEY = 'django-insecure-1p+ga@6h(ee$55e-%y$9-9c%!_2ibom7qn^xnnv&+1*f8d^%aw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['luissimi-backend-3p8p.onrender.com', 
+    'localhost', 
+    '127.0.0.1',
+    '.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://luissimi-backend-3p8p.onrender.com',
+    'http://localhost:5173', # Cho phép Frontend React gọi API
+]
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
