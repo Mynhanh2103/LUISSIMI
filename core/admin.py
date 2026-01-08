@@ -100,9 +100,9 @@ class LuissimiAdminSite(admin.AdminSite):
         extra_context.update({
             'total_users': total_users,
             'total_products': total_products,
-            'total_orders': total_orders,
-            'total_revenue': dashboard_data['total_revenue'], # Lấy từ Cache
-            'top_products': dashboard_data['top_products'],   # Lấy từ Cache
+            'total_orders': 0,#total_orders,
+            'total_revenue': 0,#dashboard_data['total_revenue'], # Lấy từ Cache
+            'top_products': [], #dashboard_data['top_products'],   # Lấy từ Cache
             'featured_products': featured_products,
             'brand_color': '#C6A667',
         })

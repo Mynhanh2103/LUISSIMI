@@ -72,7 +72,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "LUISSIMI",
     "site_brand": "LUISSIMI",
     "site_logo": "brand/logo.png", # Bạn có thể đưa logo từ frontend qua
-    "welcome_sign": "Chào mừng Minh Anh đến với hệ thống quản trị Luissimi",
+    "welcome_sign": "Chào mừng bạn đến với hệ thống quản trị Luissimi",
     "copyright": "Luissimi Ltd",
     "search_model": ["core.User", "core.Product"],
     
@@ -84,6 +84,8 @@ JAZZMIN_SETTINGS = {
     
     # Tùy chỉnh màu sắc (Theme)
     "show_ui_builder": True, # Bật cái này lên để bạn tự chỉnh màu Gold/Mocha trực tiếp trên web
+    "show_ui_builder": False, # Tắt bộ dựng UI để tiết kiệm tài nguyên
+    "changeform_format": "horizontal",
 }
 
 JAZZMIN_UI_TWEAKS = {
@@ -119,7 +121,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
