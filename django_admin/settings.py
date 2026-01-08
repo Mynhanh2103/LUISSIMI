@@ -122,7 +122,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware', # DÒNG NÀY PHẢI CÓ
-    # 'django.contrib.messages.middleware.MessageMiddleware', # Có thể tạm comment dòng này để web nhanh hơn
+    'django.contrib.messages.middleware.MessageMiddleware', # Có thể tạm comment dòng này để web nhanh hơn
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
