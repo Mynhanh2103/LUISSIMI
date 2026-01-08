@@ -122,6 +122,11 @@ JAZZMIN_UI_TWEAKS = {
 
 AUTH_USER_MODEL = 'core.User'
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://luissimi.*\.vercel\.app$",
+    r"^http://localhost:5173$",
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
