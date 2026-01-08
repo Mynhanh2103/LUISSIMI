@@ -32,7 +32,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['luissimi-backend-3p8p.onrender.com', 
     'localhost', 
     '127.0.0.1',
-    '.onrender.com']
+    '.onrender.com',
+    '.up.railway.app',
+    'luissimi-production.up.railway.app',
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://luissimi-backend-3p8p.onrender.com',
