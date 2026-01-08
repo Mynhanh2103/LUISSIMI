@@ -41,7 +41,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://luissimi-backend-3p8p.onrender.com',
     'http://localhost:5173', # Cho phép Frontend React gọi API
     "https://luissimi-frontend.onrender.com",
+    'https://luissimi-production.up.railway.app',
 ]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
