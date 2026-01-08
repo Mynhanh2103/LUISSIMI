@@ -189,7 +189,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center px-6">
           <div className="rounded-lg overflow-hidden border border-gray-100 shadow-sm bg-stone-50 p-4 flex justify-center items-center">
             <img
-              src={cmsData.story?.image || "/public/logo.jpg"}
+              src={cmsData.story?.image || "/core/static/brand/logo.png"}
               className="w-full h-auto object-cover rounded shadow-inner"
               alt="Brand Heritage"
             />

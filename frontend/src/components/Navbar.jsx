@@ -9,11 +9,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between py-4 px-6 md:px-8">
         {/* Logo (giữ nguyên) */}
         <Link to="/" className="flex items-center gap-3 z-50">
-          <img
-            src="/public/logo.jpg"
-            alt="Luissimi Logo"
-            className="h-8 w-auto"
-          />
+          <img src="logo.jpg" alt="Luissimi Logo" className="h-8 w-auto" />
           <span className="text-2xl font-playfair tracking-widest text-[#d1b89f] hover:text-[#f5e1c8] transition duration-300">
             LUISSIMI
           </span>
