@@ -1,13 +1,15 @@
 from django.shortcuts import render
-
+from django.http import HttpResponse
 # Create your views here.
-from rest_framework import viewsets, filters
+from django.contrib.auth import get_user_model
+from rest_framework import viewsets, filters, permissions
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, HeroSection, BrandStory, CraftsmanshipItem, Order, CartItem
 from .serializers import (
     ProductSerializer, HeroSectionSerializer, 
-    BrandStorySerializer, CraftsmanshipItemSerializer, OrderSerializer, CartItemSerializer
+    BrandStorySerializer, CraftsmanshipItemSerializer, OrderSerializer, CartItemSerializer,
+    UserSerializer
 )
 from rest_framework.decorators import api_view, permission_classes # Thêm dòng này
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -17,11 +19,22 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
+
+def ping_view(request):
+    """Endpoint cực nhẹ để giữ server Render không ngủ"""
+    return HttpResponse("pong", content_type="text/plain")
+
 # 1. Cấu hình phân trang giống logic của bạn ở Frontend (limit = 12)
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 12
     page_size_query_param = 'limit'
     max_page_size = 100
+
+User = get_user_model()
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 # 2. View cho Sản phẩm (Hỗ trợ tìm kiếm, lọc danh mục và giá)
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):

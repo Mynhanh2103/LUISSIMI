@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from .models import User, Product, ProductImage, Order, OrderItem, HeroSection, BrandStory, CraftsmanshipItem, Color
 from .models import CartItem
+from django.contrib.auth import get_user_model
 # 1. Serializer cho người dùng
+User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
